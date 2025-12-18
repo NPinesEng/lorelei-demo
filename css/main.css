@@ -122,8 +122,9 @@ p {
 }
 
 .main-header .logo img {
-    height: 40px;
+    height: 50px;
     width: auto;
+    filter: brightness(0) invert(1);
 }
 
 .main-header .logo-text {
@@ -208,6 +209,14 @@ p {
     justify-content: center;
     text-align: center;
     padding: var(--space-xl);
+}
+
+.video-overlay .hero-logo {
+    height: 800px;
+    width: auto;
+    max-width: 90vw;
+    filter: brightness(0) invert(1);
+    margin-bottom: var(--space-lg);
 }
 
 .video-overlay h1 {
@@ -400,6 +409,10 @@ footer p {
 
     .main-header nav {
         gap: var(--space-md);
+    }
+
+    .video-overlay .hero-logo {
+        height: 300px;
     }
 
     .video-overlay h1 {

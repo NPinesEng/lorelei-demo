@@ -59,24 +59,93 @@ class ReplayMap {
         // Clear existing geofences
         this.geofenceCircles.forEach(circle => circle.remove());
         this.geofenceCircles = [];
+        if (this.geofenceLabels) {
+            this.geofenceLabels.forEach(label => label.remove());
+        }
+        this.geofenceLabels = [];
+
+        // Check if start and finish are at the same location
+        const startGf = geofences.find(gf => gf.type === 'start');
+        const finishGf = geofences.find(gf => gf.type === 'finish');
+        const startFinishCombined = startGf && finishGf &&
+            Math.abs(startGf.latitude - finishGf.latitude) < 0.001 &&
+            Math.abs(startGf.longitude - finishGf.longitude) < 0.001;
+
+        const processedFinish = false;
 
         geofences.forEach(gf => {
             const color = this.geofenceColors[gf.type] || '#3b82f6';
+            let label = gf.type === 'stage' ? `Stage ${gf.sequence}` :
+                        gf.type.charAt(0).toUpperCase() + gf.type.slice(1);
 
-            const circle = L.circle([gf.latitude, gf.longitude], {
-                radius: gf.radius,
-                color: color,
-                fillColor: color,
-                fillOpacity: 0.25,
-                weight: 2
-            }).addTo(this.map);
+            // Skip finish if combined with start (we'll handle it with start)
+            if (gf.type === 'finish' && startFinishCombined) {
+                return;
+            }
 
-            // Create popup content
-            const typeName = gf.type.charAt(0).toUpperCase() + gf.type.slice(1);
-            const label = gf.type === 'stage' ? `Stage ${gf.sequence}` : typeName;
-            circle.bindPopup(`<strong>${label}</strong><br>Radius: ${gf.radius}m`);
+            // Combined Start/Finish label
+            if (gf.type === 'start' && startFinishCombined) {
+                label = 'Start/Finish';
+            }
 
-            this.geofenceCircles.push(circle);
+            if (gf.type === 'stage') {
+                // Soft glowing indicator for stages
+                // Outer glow layer
+                const outerGlow = L.circle([gf.latitude, gf.longitude], {
+                    radius: gf.radius * 1.5,
+                    color: 'transparent',
+                    fillColor: color,
+                    fillOpacity: 0.08,
+                    weight: 0,
+                    className: 'geofence-glow-outer'
+                }).addTo(this.map);
+
+                // Inner glow layer
+                const innerGlow = L.circle([gf.latitude, gf.longitude], {
+                    radius: gf.radius,
+                    color: 'transparent',
+                    fillColor: color,
+                    fillOpacity: 0.15,
+                    weight: 0,
+                    className: 'geofence-glow-inner'
+                }).addTo(this.map);
+
+                // Add permanent label
+                const labelMarker = L.marker([gf.latitude, gf.longitude], {
+                    icon: L.divIcon({
+                        className: 'geofence-label',
+                        html: `<span class="geofence-label-text stage-label">${label}</span>`,
+                        iconSize: [80, 20],
+                        iconAnchor: [40, 10]
+                    })
+                }).addTo(this.map);
+
+                this.geofenceCircles.push(outerGlow, innerGlow);
+                this.geofenceLabels.push(labelMarker);
+            } else {
+                // Start and Finish - slightly softer but still visible
+                const circle = L.circle([gf.latitude, gf.longitude], {
+                    radius: gf.radius,
+                    color: startFinishCombined ? this.geofenceColors['start'] : color,
+                    fillColor: startFinishCombined ? this.geofenceColors['start'] : color,
+                    fillOpacity: 0.2,
+                    weight: 2,
+                    opacity: 0.6
+                }).addTo(this.map);
+
+                // Add permanent label for start/finish
+                const labelMarker = L.marker([gf.latitude, gf.longitude], {
+                    icon: L.divIcon({
+                        className: 'geofence-label',
+                        html: `<span class="geofence-label-text ${startFinishCombined ? 'start-finish' : gf.type}-label">${label}</span>`,
+                        iconSize: [100, 20],
+                        iconAnchor: [50, 10]
+                    })
+                }).addTo(this.map);
+
+                this.geofenceCircles.push(circle);
+                this.geofenceLabels.push(labelMarker);
+            }
         });
     }
 
@@ -92,6 +161,130 @@ class ReplayMap {
             this.runnerData[runner.id] = runner;
             this.selectedRunners.add(runner.id);
         });
+    }
+
+    /**
+     * Load and display the course trail
+     * @param {Object} trailData - Trail data object with 'trail' array of [lat, lon] coordinates
+     */
+    loadTrail(trailData) {
+        // Remove existing course trail
+        if (this.courseTrailLine) {
+            this.courseTrailLine.remove();
+            this.courseTrailLine = null;
+        }
+        if (this.courseTrailGlow) {
+            this.courseTrailGlow.remove();
+            this.courseTrailGlow = null;
+        }
+
+        // Store trail data for off-course detection
+        this.courseTrailData = trailData;
+
+        if (!trailData || !trailData.trail || trailData.trail.length === 0) {
+            console.log('No trail data to display');
+            return;
+        }
+
+        console.log(`Loading course trail: ${trailData.trail.length} points from ${trailData.source_runner}`);
+
+        const trailCoords = trailData.trail;
+
+        // Create glow effect (wider, semi-transparent white)
+        this.courseTrailGlow = L.polyline(trailCoords, {
+            color: '#ffffff',
+            weight: 12,
+            opacity: 0.25,
+            lineCap: 'round',
+            lineJoin: 'round'
+        }).addTo(this.map);
+
+        // Create main trail line (white dashed line)
+        this.courseTrailLine = L.polyline(trailCoords, {
+            color: '#ffffff',
+            weight: 3,
+            opacity: 0.8,
+            lineCap: 'round',
+            lineJoin: 'round',
+            dashArray: '12, 8'
+        }).addTo(this.map);
+    }
+
+    /**
+     * Check if a position is off the course trail
+     * @param {number} lat - Latitude
+     * @param {number} lon - Longitude
+     * @param {number} threshold - Distance threshold in meters (default 50m)
+     * @returns {boolean} True if position is off course
+     */
+    isOffCourse(lat, lon, threshold = 50) {
+        if (!this.courseTrailData || !this.courseTrailData.trail || this.courseTrailData.trail.length === 0) {
+            return false;
+        }
+
+        const point = L.latLng(lat, lon);
+        let minDistance = Infinity;
+
+        // Find minimum distance to any trail segment
+        const trail = this.courseTrailData.trail;
+        for (let i = 0; i < trail.length - 1; i++) {
+            const segStart = L.latLng(trail[i][0], trail[i][1]);
+            const segEnd = L.latLng(trail[i + 1][0], trail[i + 1][1]);
+
+            // Distance to segment (approximate using point-to-line distance)
+            const dist = this._pointToSegmentDistance(point, segStart, segEnd);
+            if (dist < minDistance) {
+                minDistance = dist;
+            }
+        }
+
+        return minDistance > threshold;
+    }
+
+    /**
+     * Calculate distance from point to line segment
+     * @private
+     */
+    _pointToSegmentDistance(point, segStart, segEnd) {
+        const x = point.lat;
+        const y = point.lng;
+        const x1 = segStart.lat;
+        const y1 = segStart.lng;
+        const x2 = segEnd.lat;
+        const y2 = segEnd.lng;
+
+        const A = x - x1;
+        const B = y - y1;
+        const C = x2 - x1;
+        const D = y2 - y1;
+
+        const dot = A * C + B * D;
+        const lenSq = C * C + D * D;
+        let param = -1;
+
+        if (lenSq !== 0) {
+            param = dot / lenSq;
+        }
+
+        let xx, yy;
+
+        if (param < 0) {
+            xx = x1;
+            yy = y1;
+        } else if (param > 1) {
+            xx = x2;
+            yy = y2;
+        } else {
+            xx = x1 + param * C;
+            yy = y1 + param * D;
+        }
+
+        // Convert lat/lng difference to approximate meters
+        // 1 degree lat ≈ 111,000 meters, 1 degree lng varies with latitude
+        const latDiff = (x - xx) * 111000;
+        const lngDiff = (y - yy) * 111000 * Math.cos(x * Math.PI / 180);
+
+        return Math.sqrt(latDiff * latDiff + lngDiff * lngDiff);
     }
 
     /**
@@ -273,6 +466,10 @@ class ReplayMap {
      */
     showEventLabel(event) {
         const runnerId = event.r;
+
+        // Don't show events for hidden runners
+        if (!this.selectedRunners.has(runnerId)) return;
+
         const marker = this.markers[runnerId];
         if (!marker) return;
 
@@ -363,6 +560,15 @@ class ReplayMap {
         }
         if (this.trails[runnerId]) {
             this.trails[runnerId].setStyle({ opacity: 0 });
+        }
+        // Clear any event label for this runner
+        if (this.eventLabels[runnerId]) {
+            this.eventLabels[runnerId].remove();
+            delete this.eventLabels[runnerId];
+        }
+        if (this.eventLabelTimeouts[runnerId]) {
+            clearTimeout(this.eventLabelTimeouts[runnerId]);
+            delete this.eventLabelTimeouts[runnerId];
         }
     }
 

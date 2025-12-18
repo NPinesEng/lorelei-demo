@@ -3,8 +3,8 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>772 Endurance Race Replay - LoRELEI</title>
-    <meta name="description" content="Race replay demonstration of LoRELEI GPS tracking system - 772 Endurance Race with 12 runners over 2 days.">
+    <title>Field Trial #2 (Paducah) - LoRELEI</title>
+    <meta name="description" content="Race replay demonstration of LoRELEI GPS tracking system - Field Trial #2 with 12 runners over 2 days.">
     <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" />
     <link rel="stylesheet" href="./css/main.css">
     <link rel="stylesheet" href="./css/replay.css">
@@ -14,18 +14,15 @@
 </head>
 <body>
     <header class="main-header">
-        <a href="./" class="logo">
-            <span class="logo-text">LoRELEI</span>
-        </a>
         <nav>
             <a href="./">Home</a>
-            <a href="./replay-yoranch.html">YO Ranch</a>
-            <a href="./replay-772.html" class="active">772 Race</a>
+            <a href="./replay-yoranch.html">Trial #1</a>
+            <a href="./replay-772.html" class="active">Trial #2</a>
         </nav>
     </header>
 
     <main class="replay-page">
-        <h1>772 Endurance Race</h1>
+        <h1>Field Trial #2 (Paducah)</h1>
 
         <!-- Day Selector -->
         <div class="day-selector">
@@ -161,9 +158,12 @@
                 // Load race data
                 const data = await engine.loadData(raceId);
 
-                // Setup map with geofences and runners
+                // Setup map with geofences, runners, and course trail
                 map.loadGeofences(data.geofences);
                 map.loadRunners(data.runners);
+                if (data.trail) {
+                    map.loadTrail(data.trail);
+                }
                 map.fitToPositionData(data.positions);
 
                 // Setup or update controls

@@ -3,8 +3,8 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>YO Ranch Race Replay - LoRELEI</title>
-    <meta name="description" content="Race replay demonstration of LoRELEI GPS tracking system - YO Ranch Trial with 4 runners.">
+    <title>Field Trial #1 (YO Ranch) - LoRELEI</title>
+    <meta name="description" content="Race replay demonstration of LoRELEI GPS tracking system - Field Trial #1 with 4 runners.">
     <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" />
     <link rel="stylesheet" href="./css/main.css">
     <link rel="stylesheet" href="./css/replay.css">
@@ -14,18 +14,15 @@
 </head>
 <body>
     <header class="main-header">
-        <a href="./" class="logo">
-            <span class="logo-text">LoRELEI</span>
-        </a>
         <nav>
             <a href="./">Home</a>
-            <a href="./replay-yoranch.html" class="active">YO Ranch</a>
-            <a href="./replay-772.html">772 Race</a>
+            <a href="./replay-yoranch.html" class="active">Trial #1</a>
+            <a href="./replay-772.html">Trial #2</a>
         </nav>
     </header>
 
     <main class="replay-page">
-        <h1>YO Ranch Trial Race</h1>
+        <h1>Field Trial #1 (YO Ranch)</h1>
         <p class="race-info" id="race-info">Loading...</p>
 
         <!-- Live Scorecard -->
@@ -121,9 +118,16 @@
                 // Load race data
                 const data = await engine.loadData('yoranch');
 
-                // Setup map with geofences and runners
+                // Setup map with geofences, runners, and course trail
                 map.loadGeofences(data.geofences);
                 map.loadRunners(data.runners);
+                console.log('Trail data from engine:', data.trail);
+                if (data.trail) {
+                    console.log('Calling loadTrail with', data.trail.point_count, 'points');
+                    map.loadTrail(data.trail);
+                } else {
+                    console.log('No trail data in loaded data');
+                }
                 map.fitToPositionData(data.positions);
 
                 // Setup controls

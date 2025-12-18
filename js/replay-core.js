@@ -33,6 +33,9 @@ class ReplayEngine {
         // Runner positions state (latest known position per runner)
         this.runnerPositions = {};
 
+        // Position history for interpolation (runnerId -> array of {t, lat, lon})
+        this.positionHistory = {};
+
         // Scoring state per runner (tracks what has been shown/processed)
         this.scoringState = {};  // runner_id -> {hasStarted, hasFinished, stagesEntered: Set, stagesExited: Set}
     }
@@ -53,11 +56,26 @@ class ReplayEngine {
                 fetch(`${basePath}/scoring.json`).then(r => r.json())
             ]);
 
+            // Load trail data (optional, may not exist)
+            let trail = null;
+            try {
+                const trailResponse = await fetch(`${basePath}/trail.json`);
+                if (trailResponse.ok) {
+                    trail = await trailResponse.json();
+                    console.log('Loaded trail data:', trail.point_count, 'points');
+                } else {
+                    console.log('Trail file not found:', trailResponse.status);
+                }
+            } catch (e) {
+                console.log('Error loading trail data:', e);
+            }
+
             this.positions = positions;
             this.geofences = geofences;
             this.runners = runners;
             this.scoring = scoring;
             this.metadata = metadata;
+            this.trail = trail;
 
             this.startTime = metadata.startTime;
             this.endTime = metadata.endTime;
@@ -70,6 +88,21 @@ class ReplayEngine {
             this.runnerMap = {};
             runners.forEach(r => {
                 this.runnerMap[r.id] = r;
+            });
+
+            // Build position history for interpolation
+            this.positionHistory = {};
+            this.positions.forEach(frame => {
+                frame.p.forEach(pos => {
+                    if (!this.positionHistory[pos.r]) {
+                        this.positionHistory[pos.r] = [];
+                    }
+                    this.positionHistory[pos.r].push({
+                        t: frame.t,
+                        lat: pos.lat,
+                        lon: pos.lon
+                    });
+                });
             });
 
             // Create scoring lookup map
@@ -93,7 +126,8 @@ class ReplayEngine {
                 geofences: this.geofences,
                 runners: this.runners,
                 scoring: this.scoring,
-                metadata: this.metadata
+                metadata: this.metadata,
+                trail: this.trail
             });
 
             return {
@@ -101,7 +135,8 @@ class ReplayEngine {
                 geofences: this.geofences,
                 runners: this.runners,
                 scoring: this.scoring,
-                metadata: this.metadata
+                metadata: this.metadata,
+                trail: this.trail
             };
         } catch (error) {
             console.error('Failed to load race data:', error);
@@ -285,14 +320,73 @@ class ReplayEngine {
     }
 
     /**
-     * Get current runner positions
+     * Get current runner positions with interpolation
      * @returns {Array} Array of position objects with runner info
      */
     getCurrentPositions() {
-        return Object.values(this.runnerPositions).map(pos => ({
-            ...pos,
-            runner: this.runnerMap[pos.r]
-        }));
+        const positions = [];
+
+        for (const runnerId of Object.keys(this.positionHistory)) {
+            const history = this.positionHistory[runnerId];
+            if (!history || history.length === 0) continue;
+
+            const interpolated = this._interpolatePosition(history, this.currentTime);
+            if (interpolated) {
+                positions.push({
+                    r: parseInt(runnerId),
+                    lat: interpolated.lat,
+                    lon: interpolated.lon,
+                    runner: this.runnerMap[runnerId]
+                });
+            }
+        }
+
+        return positions;
+    }
+
+    /**
+     * Interpolate position at a given time
+     * @param {Array} history - Array of {t, lat, lon} sorted by time
+     * @param {number} time - Target timestamp
+     * @returns {Object|null} Interpolated {lat, lon} or null if no data
+     */
+    _interpolatePosition(history, time) {
+        if (!history || history.length === 0) return null;
+
+        // Before first position
+        if (time < history[0].t) return null;
+
+        // After last position - return last known
+        if (time >= history[history.length - 1].t) {
+            const last = history[history.length - 1];
+            return { lat: last.lat, lon: last.lon };
+        }
+
+        // Find surrounding positions using binary search
+        let lo = 0, hi = history.length - 1;
+        while (lo < hi - 1) {
+            const mid = Math.floor((lo + hi) / 2);
+            if (history[mid].t <= time) {
+                lo = mid;
+            } else {
+                hi = mid;
+            }
+        }
+
+        const p1 = history[lo];
+        const p2 = history[hi];
+
+        // Calculate interpolation factor
+        const dt = p2.t - p1.t;
+        if (dt === 0) return { lat: p1.lat, lon: p1.lon };
+
+        const t = (time - p1.t) / dt;
+
+        // Linear interpolation
+        return {
+            lat: p1.lat + (p2.lat - p1.lat) * t,
+            lon: p1.lon + (p2.lon - p1.lon) * t
+        };
     }
 
     /**

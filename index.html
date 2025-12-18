@@ -1,20 +1,20 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>LoRELEI - GPS Race Tracking with LoRa Mesh</title>
-    <meta name="description" content="LoRELEI is a GPS race tracking system using LoRa mesh networking for outdoor endurance events. Real-time tracking without cellular coverage.">
+    <meta name="description"
+        content="LoRELEI is a GPS race tracking system using LoRa mesh networking for outdoor endurance events. Real-time tracking without cellular coverage.">
     <link rel="stylesheet" href="./css/main.css">
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
 </head>
+
 <body>
     <header class="main-header">
-        <a href="./" class="logo">
-            <span class="logo-text">LoRELEI</span>
-        </a>
         <nav>
             <a href="#about">About</a>
             <a href="#features">Features</a>
@@ -26,19 +26,14 @@
     <!-- Hero Section with Video Banner -->
     <section class="hero">
         <div class="video-container">
-            <!-- Video placeholder - replace with actual video -->
-            <div class="video-placeholder">
-                <span class="video-placeholder-text">Video Banner</span>
-            </div>
-            <!--
-            <video autoplay muted loop playsinline poster="./assets/video-poster.jpg">
-                <source src="./assets/hero-video.mp4" type="video/mp4">
+            <video autoplay muted loop playsinline>
+                <source src="./banner.mp4" type="video/mp4">
             </video>
-            -->
             <div class="video-overlay">
+                <img src="./NPE Logo2.png" alt="Nein Pines Engineering" class="hero-logo">
                 <h1>LoRELEI</h1>
-                <p class="tagline">GPS Race Tracking for the Backcountry</p>
-                <p class="subtitle">Real-time position tracking using LoRa mesh networking - no cellular required</p>
+                <p class="tagline">Intelligence for the Backcountry</p>
+                <p class="subtitle">Real-time tracking for the off-grid competition.</p>
                 <a href="#demos" class="cta-button">See It In Action</a>
             </div>
         </div>
@@ -50,18 +45,20 @@
             <h2>About LoRELEI</h2>
             <div class="about-content">
                 <p>
-                    <strong>LoRELEI</strong> (Long-Range Environmental Location and Event Intelligence) is a GPS tracking
+                    <strong>LoRELEI</strong> (Long-Range Environmental Location and Event Intelligence) is a patent
+                    pending GPS
+                    tracking
                     system designed specifically for outdoor endurance events in areas without cellular coverage.
                 </p>
                 <p>
                     Using LoRa mesh networking technology, LoRELEI provides real-time tracking of runners, cyclists,
                     and other participants across remote terrain where traditional GPS tracking solutions fail.
-                    The system supports up to 100 concurrent runners with position updates every 20 seconds.
+                    The system supports up to 100 concurrent runners with real-time position updates.
                 </p>
                 <p>
-                    Developed by <strong>Nein Pines Engineering</strong> for competition shooting events and
-                    endurance races, LoRELEI transforms race management from reactive (manual timing, volunteer spotters)
-                    to proactive (automated geofence detection, real-time alerts).
+                    Developed by <strong>Nein Pines Engineering</strong> for Run & Gun,competition shooting events and
+                    endurance races, LoRELEI transforms race management from reactive (manual timing, paperwork)
+                    to proactive (automated detection, real-time alerts).
                 </p>
             </div>
         </div>
@@ -74,27 +71,32 @@
             <div class="features-grid">
                 <div class="feature-card">
                     <h3>No Cellular Required</h3>
-                    <p>LoRa mesh networking provides multi-mile coverage in remote areas where cell phones do not work. Perfect for backcountry events.</p>
+                    <p>LoRa mesh networking provides multi-mile coverage in remote areas where cell phones do not work.
+                    </p>
                 </div>
                 <div class="feature-card">
                     <h3>Real-Time Tracking</h3>
-                    <p>Position updates every 20 seconds with automatic geofence detection for starts, stages, and finishes.</p>
+                    <p>Live position updates with automatic geofence detection for starts, stages, and
+                        finishes.</p>
                 </div>
                 <div class="feature-card">
-                    <h3>Multi-Day Battery</h3>
-                    <p>Compact GPS trackers provide 24+ hours of continuous operation on a single charge. IP67 waterproof enclosures.</p>
+                    <h3>Engineered for Purpose</h3>
+                    <p>Compact devices provide 24+ hours of continuous operation on a single charge. Protected against
+                        water, dust, and impact. </p>
                 </div>
                 <div class="feature-card">
                     <h3>Automated Scoring</h3>
-                    <p>Automatic checkpoint detection and timing without manual intervention. GPS-based timestamps eliminate human error.</p>
+                    <p>Automatic checkpoint detection and timing without manual intervention. Timestamped to the second.
+                    </p>
                 </div>
                 <div class="feature-card">
                     <h3>Safety Monitoring</h3>
-                    <p>Alarm zone geofences detect off-course runners immediately. Idle detection alerts for potentially stuck participants.</p>
+                    <p>Alarm zones detect off-course runners immediately. Idle detection alerts in case of injury or
+                        incapacitation.</p>
                 </div>
                 <div class="feature-card">
                     <h3>Live Leaderboards</h3>
-                    <p>Real-time results display for spectators and officials. Export to CSV for official scoring.</p>
+                    <p>Real-time results display for spectators and officials. Exports for official scoring.</p>
                 </div>
             </div>
         </div>
@@ -104,16 +106,17 @@
     <section id="demos" class="demos-section">
         <div class="container">
             <h2>Live Demonstrations</h2>
-            <p>Explore recorded race data from our field trials. Watch runners navigate the course in real-time replay.</p>
+            <p>Explore recorded race data from our field trials. Watch runners navigate the course in real-time replay.
+            </p>
             <div class="demos-grid">
                 <a href="./replay-yoranch.html" class="demo-card">
-                    <h3>YO Ranch Trial</h3>
-                    <p>4 runners navigating the full course. November 2025 field test.</p>
+                    <h3>Field Trial #1 (YO Ranch)</h3>
+                    <p>4 runners - full course. November 2025 field test.</p>
                     <span class="demo-cta">View Replay</span>
                 </a>
                 <a href="./replay-772.html" class="demo-card">
-                    <h3>772 Endurance Race</h3>
-                    <p>12 runners over 2 days. Full multi-stage competition tracking.</p>
+                    <h3>Field Trial #2 (Paducah)</h3>
+                    <p>12 runners over 2 days. December 2025 Field Test.</p>
                     <span class="demo-cta">View Replay</span>
                 </a>
             </div>
@@ -126,14 +129,16 @@
             <h2>Contact</h2>
             <div class="contact-content">
                 <p>Interested in LoRELEI for your event?</p>
-                <p><strong>Nein Pines Engineering</strong></p>
+                <p><strong>Nein Pines Engineering LLC</strong></p>
                 <p><a href="https://npines.io">npines.io</a></p>
             </div>
         </div>
     </section>
 
     <footer>
-        <p>Nein Pines Engineering - npines.io</p>
+        <p>Nein Pines Engineering LLC - npines.io</p>
+        <p>Rights Reserved | Patent Pending </p>
     </footer>
 </body>
+
 </html>

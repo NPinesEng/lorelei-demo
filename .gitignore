@@ -21,3 +21,6 @@ venv/
 
 # Temporary files
 *.tmp
+
+# Export tools (internal use only)
+tools/

@@ -552,3 +552,50 @@
         grid-template-columns: repeat(auto-fill, minmax(150px, 1fr));
     }
 }
+
+/* Geofence Labels */
+.geofence-label {
+    background: transparent !important;
+    border: none !important;
+}
+
+.geofence-label-text {
+    display: block;
+    text-align: center;
+    font-size: 0.75rem;
+    font-weight: 600;
+    padding: 3px 8px;
+    border-radius: var(--radius-sm);
+    white-space: nowrap;
+    text-shadow: 0 1px 3px rgba(0, 0, 0, 0.8);
+}
+
+.stage-label {
+    background: rgba(249, 115, 22, 0.85);
+    color: #fff;
+}
+
+.start-label {
+    background: rgba(34, 197, 94, 0.85);
+    color: #fff;
+}
+
+.finish-label {
+    background: rgba(239, 68, 68, 0.85);
+    color: #fff;
+}
+
+.start-finish-label {
+    background: linear-gradient(90deg, rgba(34, 197, 94, 0.85), rgba(239, 68, 68, 0.85));
+    color: #fff;
+}
+
+/* Course Trail Line */
+.course-trail {
+    stroke-linecap: round;
+    stroke-linejoin: round;
+}
+
+.course-trail-glow {
+    filter: blur(3px);
+}
