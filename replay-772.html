@@ -1,0 +1,164 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>772 Endurance Race Replay - LoRELEI</title>
+    <meta name="description" content="Race replay demonstration of LoRELEI GPS tracking system - 772 Endurance Race with 12 runners over 2 days.">
+    <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" />
+    <link rel="stylesheet" href="./css/main.css">
+    <link rel="stylesheet" href="./css/replay.css">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+</head>
+<body>
+    <header class="main-header">
+        <a href="./" class="logo">
+            <span class="logo-text">LoRELEI</span>
+        </a>
+        <nav>
+            <a href="./">Home</a>
+            <a href="./replay-yoranch.html">YO Ranch</a>
+            <a href="./replay-772.html" class="active">772 Race</a>
+        </nav>
+    </header>
+
+    <main class="replay-page">
+        <h1>772 Endurance Race</h1>
+
+        <!-- Day Selector -->
+        <div class="day-selector">
+            <button class="day-btn active" data-race="772/day1">Day 1 - Dec 5</button>
+            <button class="day-btn" data-race="772/day2">Day 2 - Dec 6</button>
+        </div>
+
+        <p class="race-info" id="race-info">Loading...</p>
+
+        <div id="map" class="replay-map">
+            <div class="loading-overlay" id="loading-overlay">
+                <div class="loading-spinner"></div>
+            </div>
+        </div>
+        <div id="controls" class="replay-controls-container"></div>
+    </main>
+
+    <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
+    <script src="./js/replay-core.js"></script>
+    <script src="./js/replay-map.js"></script>
+    <script src="./js/replay-controls.js"></script>
+    <script>
+        let engine = null;
+        let map = null;
+        let controls = null;
+        let currentRaceId = '772/day1';
+
+        // Load a specific race day
+        async function loadRace(raceId) {
+            const loadingOverlay = document.getElementById('loading-overlay');
+            loadingOverlay.style.display = 'flex';
+
+            // Stop any existing playback
+            if (engine) {
+                engine.pause();
+            }
+
+            // Reset map state
+            if (map) {
+                map.reset();
+            }
+
+            try {
+                // Create new engine (or reuse)
+                if (!engine) {
+                    engine = new ReplayEngine({
+                        onUpdate: (positions, time) => {
+                            map.updatePositions(positions);
+                        },
+                        onLoadComplete: (data) => {
+                            loadingOverlay.style.display = 'none';
+
+                            const raceInfo = document.getElementById('race-info');
+                            const dateStr = raceId.includes('day1') ? 'December 5, 2025' : 'December 6, 2025';
+                            raceInfo.textContent = `${data.runners.length} runners - ${dateStr}`;
+                        }
+                    });
+                } else {
+                    // Update callback for existing engine
+                    engine.onLoadComplete = (data) => {
+                        loadingOverlay.style.display = 'none';
+
+                        const raceInfo = document.getElementById('race-info');
+                        const dateStr = raceId.includes('day1') ? 'December 5, 2025' : 'December 6, 2025';
+                        raceInfo.textContent = `${data.runners.length} runners - ${dateStr}`;
+                    };
+                }
+
+                // Create map if not exists
+                if (!map) {
+                    map = new ReplayMap('map', {
+                        maxTrailLength: 100
+                    });
+                }
+
+                // Load race data
+                const data = await engine.loadData(raceId);
+
+                // Setup map with geofences and runners
+                map.loadGeofences(data.geofences);
+                map.loadRunners(data.runners);
+                map.fitToGeofences();
+
+                // Setup or update controls
+                if (!controls) {
+                    controls = new ReplayControls('controls', engine, map);
+                }
+
+                // Reload runner list in controls
+                const followSelect = document.getElementById('follow-select');
+                // Remove existing runner options (keep All and Manual)
+                while (followSelect.options.length > 2) {
+                    followSelect.remove(2);
+                }
+                data.runners.forEach(runner => {
+                    const option = document.createElement('option');
+                    option.value = runner.id;
+                    option.textContent = runner.name;
+                    followSelect.appendChild(option);
+                });
+
+                // Reload runner checkboxes
+                controls.loadRunners(data.runners);
+                controls.updateMetadata(data.metadata);
+
+                currentRaceId = raceId;
+
+            } catch (error) {
+                console.error('Failed to load race:', error);
+                loadingOverlay.innerHTML = '<p style="color: #ef4444;">Failed to load race data</p>';
+            }
+        }
+
+        // Initialize
+        async function init() {
+            // Setup day selector buttons
+            const dayButtons = document.querySelectorAll('.day-btn');
+            dayButtons.forEach(btn => {
+                btn.addEventListener('click', () => {
+                    // Update active state
+                    dayButtons.forEach(b => b.classList.remove('active'));
+                    btn.classList.add('active');
+
+                    // Load the selected race
+                    loadRace(btn.dataset.race);
+                });
+            });
+
+            // Load initial race (Day 1)
+            await loadRace('772/day1');
+        }
+
+        init();
+    </script>
+</body>
+</html>

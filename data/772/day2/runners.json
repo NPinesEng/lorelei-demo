@@ -1,0 +1,38 @@
+[
+  {
+    "id": 8,
+    "name": "Luke",
+    "node_id": "!7f76111d",
+    "color": "#4daf4a"
+  },
+  {
+    "id": 24,
+    "name": "Merrill",
+    "node_id": "!a2d78304",
+    "color": "#a65628"
+  },
+  {
+    "id": 34,
+    "name": "Casey",
+    "node_id": "!3d57cbe8",
+    "color": "#e41a1c"
+  },
+  {
+    "id": 77,
+    "name": "Cody",
+    "node_id": "!95d7a717",
+    "color": "#ff7f00"
+  },
+  {
+    "id": 96,
+    "name": "Todd",
+    "node_id": "!2f999eee",
+    "color": "#ff7f00"
+  },
+  {
+    "id": 400,
+    "name": "Nick",
+    "node_id": "!f126e4c9",
+    "color": "#f781bf"
+  }
+]

@@ -1,0 +1,421 @@
+/* LoRELEI Demo Website - Replay Module Styles */
+
+/* Replay Page Layout */
+.replay-page {
+    padding-top: 80px; /* Account for fixed header */
+    min-height: 100vh;
+    display: flex;
+    flex-direction: column;
+}
+
+.replay-page h1 {
+    text-align: center;
+    padding: var(--space-lg) var(--space-md);
+    margin-bottom: 0;
+}
+
+.replay-page .race-info {
+    text-align: center;
+    color: var(--color-text-muted);
+    margin-bottom: var(--space-lg);
+}
+
+/* Map Container */
+.replay-map {
+    flex: 1;
+    min-height: 500px;
+    background: var(--color-bg-tertiary);
+    border: 1px solid var(--color-border);
+    margin: 0 var(--space-md);
+    border-radius: var(--radius-lg) var(--radius-lg) 0 0;
+}
+
+/* Controls Container */
+.replay-controls-container {
+    margin: 0 var(--space-md) var(--space-md);
+}
+
+/* Replay Controls */
+.replay-controls {
+    background: var(--color-bg-secondary);
+    border: 1px solid var(--color-border);
+    border-top: none;
+    border-radius: 0 0 var(--radius-lg) var(--radius-lg);
+    padding: var(--space-md);
+}
+
+.controls-main {
+    margin-bottom: var(--space-md);
+}
+
+.controls-row {
+    display: flex;
+    align-items: center;
+    gap: var(--space-md);
+}
+
+.controls-playback {
+    margin-bottom: var(--space-md);
+    flex-wrap: wrap;
+}
+
+/* Play Button */
+.play-btn {
+    width: 48px;
+    height: 48px;
+    border-radius: 50%;
+    background: var(--color-accent);
+    border: none;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: var(--color-bg);
+    transition: all var(--transition-fast);
+    flex-shrink: 0;
+}
+
+.play-btn:hover {
+    background: var(--color-accent-hover);
+    transform: scale(1.05);
+}
+
+.play-btn svg {
+    width: 20px;
+    height: 20px;
+}
+
+.play-btn .icon-play {
+    margin-left: 2px; /* Visual centering for play icon */
+}
+
+/* Speed Control */
+.speed-control {
+    display: flex;
+    align-items: center;
+    gap: var(--space-sm);
+}
+
+.speed-control label {
+    color: var(--color-text-muted);
+    font-size: 0.875rem;
+    white-space: nowrap;
+}
+
+.control-select {
+    background: var(--color-bg-tertiary);
+    border: 1px solid var(--color-border);
+    border-radius: var(--radius-sm);
+    color: var(--color-text);
+    padding: var(--space-sm) var(--space-md);
+    font-size: 0.875rem;
+    cursor: pointer;
+    min-width: 70px;
+}
+
+.control-select:focus {
+    outline: none;
+    border-color: var(--color-accent);
+}
+
+/* Time Display */
+.time-display {
+    display: flex;
+    align-items: center;
+    gap: var(--space-xs);
+    font-family: var(--font-mono);
+    font-size: 0.9rem;
+    background: var(--color-bg-tertiary);
+    padding: var(--space-sm) var(--space-md);
+    border-radius: var(--radius-sm);
+}
+
+.time-value {
+    color: var(--color-text);
+}
+
+.time-separator {
+    color: var(--color-text-dim);
+}
+
+/* Elapsed Time */
+.elapsed-display {
+    display: flex;
+    align-items: center;
+    gap: var(--space-sm);
+    margin-left: auto;
+}
+
+.elapsed-label {
+    color: var(--color-text-muted);
+    font-size: 0.875rem;
+}
+
+.elapsed-value {
+    font-family: var(--font-mono);
+    font-size: 1rem;
+    color: var(--color-accent);
+    font-weight: 600;
+}
+
+/* Timeline Slider */
+.controls-timeline {
+    padding: var(--space-sm) 0;
+}
+
+.timeline-slider {
+    width: 100%;
+    height: 8px;
+    -webkit-appearance: none;
+    appearance: none;
+    background: var(--color-bg-tertiary);
+    border-radius: 4px;
+    cursor: pointer;
+}
+
+.timeline-slider::-webkit-slider-thumb {
+    -webkit-appearance: none;
+    appearance: none;
+    width: 18px;
+    height: 18px;
+    background: var(--color-accent);
+    border-radius: 50%;
+    cursor: pointer;
+    transition: transform var(--transition-fast);
+}
+
+.timeline-slider::-webkit-slider-thumb:hover {
+    transform: scale(1.2);
+}
+
+.timeline-slider::-moz-range-thumb {
+    width: 18px;
+    height: 18px;
+    background: var(--color-accent);
+    border-radius: 50%;
+    border: none;
+    cursor: pointer;
+}
+
+.timeline-slider::-webkit-slider-runnable-track {
+    height: 8px;
+    background: linear-gradient(
+        to right,
+        var(--color-accent) 0%,
+        var(--color-accent) var(--progress, 0%),
+        var(--color-bg-tertiary) var(--progress, 0%),
+        var(--color-bg-tertiary) 100%
+    );
+    border-radius: 4px;
+}
+
+/* Secondary Controls */
+.controls-secondary {
+    display: flex;
+    align-items: flex-start;
+    gap: var(--space-xl);
+    padding-top: var(--space-md);
+    border-top: 1px solid var(--color-border);
+    flex-wrap: wrap;
+}
+
+.follow-control {
+    display: flex;
+    align-items: center;
+    gap: var(--space-sm);
+}
+
+.follow-control label {
+    color: var(--color-text-muted);
+    font-size: 0.875rem;
+}
+
+/* Runner Filter */
+.runner-filter {
+    flex: 1;
+}
+
+.filter-label {
+    color: var(--color-text-muted);
+    font-size: 0.875rem;
+    margin-right: var(--space-md);
+}
+
+.runner-checkboxes {
+    display: flex;
+    flex-wrap: wrap;
+    gap: var(--space-sm);
+    margin-top: var(--space-sm);
+}
+
+.runner-checkbox {
+    display: flex;
+    align-items: center;
+    gap: var(--space-xs);
+    background: var(--color-bg-tertiary);
+    padding: var(--space-xs) var(--space-sm);
+    border-radius: var(--radius-sm);
+    cursor: pointer;
+    font-size: 0.875rem;
+    transition: all var(--transition-fast);
+}
+
+.runner-checkbox:hover {
+    background: var(--color-bg);
+}
+
+.runner-checkbox input[type="checkbox"] {
+    cursor: pointer;
+}
+
+.runner-color-dot {
+    width: 10px;
+    height: 10px;
+    border-radius: 50%;
+    flex-shrink: 0;
+}
+
+/* Day Selector (for multi-day races) */
+.day-selector {
+    display: flex;
+    justify-content: center;
+    gap: var(--space-sm);
+    margin-bottom: var(--space-lg);
+}
+
+.day-btn {
+    background: var(--color-bg-tertiary);
+    border: 1px solid var(--color-border);
+    border-radius: var(--radius-md);
+    color: var(--color-text-muted);
+    padding: var(--space-sm) var(--space-lg);
+    font-size: 0.9rem;
+    cursor: pointer;
+    transition: all var(--transition-fast);
+}
+
+.day-btn:hover {
+    border-color: var(--color-accent);
+    color: var(--color-text);
+}
+
+.day-btn.active {
+    background: var(--color-accent);
+    border-color: var(--color-accent);
+    color: var(--color-bg);
+}
+
+/* Loading State */
+.loading-overlay {
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background: rgba(10, 15, 26, 0.9);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    z-index: 100;
+}
+
+.loading-spinner {
+    width: 48px;
+    height: 48px;
+    border: 4px solid var(--color-border);
+    border-top-color: var(--color-accent);
+    border-radius: 50%;
+    animation: spin 1s linear infinite;
+}
+
+@keyframes spin {
+    to { transform: rotate(360deg); }
+}
+
+/* Responsive */
+@media (max-width: 768px) {
+    .replay-page h1 {
+        font-size: 1.5rem;
+    }
+
+    .replay-map {
+        min-height: 400px;
+        margin: 0 var(--space-sm);
+    }
+
+    .replay-controls-container {
+        margin: 0 var(--space-sm) var(--space-sm);
+    }
+
+    .controls-playback {
+        justify-content: center;
+    }
+
+    .elapsed-display {
+        margin-left: 0;
+        width: 100%;
+        justify-content: center;
+        padding-top: var(--space-sm);
+    }
+
+    .controls-secondary {
+        flex-direction: column;
+        gap: var(--space-md);
+    }
+
+    .runner-filter {
+        width: 100%;
+    }
+}
+
+/* Leaflet Overrides */
+.leaflet-container {
+    font-family: var(--font-sans);
+}
+
+.leaflet-popup-content-wrapper {
+    background: var(--color-bg-secondary);
+    color: var(--color-text);
+    border-radius: var(--radius-md);
+}
+
+.leaflet-popup-tip {
+    background: var(--color-bg-secondary);
+}
+
+.leaflet-popup-content {
+    margin: var(--space-sm) var(--space-md);
+}
+
+.leaflet-control-zoom a {
+    background: var(--color-bg-secondary) !important;
+    color: var(--color-text) !important;
+    border-color: var(--color-border) !important;
+}
+
+.leaflet-control-zoom a:hover {
+    background: var(--color-bg-tertiary) !important;
+}
+
+.leaflet-control-attribution {
+    background: rgba(10, 15, 26, 0.8) !important;
+    color: var(--color-text-dim) !important;
+}
+
+.leaflet-control-attribution a {
+    color: var(--color-text-muted) !important;
+}
+
+.leaflet-tooltip {
+    background: var(--color-bg-secondary);
+    color: var(--color-text);
+    border: 1px solid var(--color-border);
+    border-radius: var(--radius-sm);
+    padding: var(--space-xs) var(--space-sm);
+    font-size: 0.875rem;
+    box-shadow: 0 2px 10px rgba(0, 0, 0, 0.3);
+}
+
+.leaflet-tooltip-top:before {
+    border-top-color: var(--color-bg-secondary);
+}

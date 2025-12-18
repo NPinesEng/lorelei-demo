@@ -1,0 +1,91 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>YO Ranch Race Replay - LoRELEI</title>
+    <meta name="description" content="Race replay demonstration of LoRELEI GPS tracking system - YO Ranch Trial with 4 runners.">
+    <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" />
+    <link rel="stylesheet" href="./css/main.css">
+    <link rel="stylesheet" href="./css/replay.css">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+</head>
+<body>
+    <header class="main-header">
+        <a href="./" class="logo">
+            <span class="logo-text">LoRELEI</span>
+        </a>
+        <nav>
+            <a href="./">Home</a>
+            <a href="./replay-yoranch.html" class="active">YO Ranch</a>
+            <a href="./replay-772.html">772 Race</a>
+        </nav>
+    </header>
+
+    <main class="replay-page">
+        <h1>YO Ranch Trial Race</h1>
+        <p class="race-info" id="race-info">Loading...</p>
+
+        <div id="map" class="replay-map">
+            <div class="loading-overlay" id="loading-overlay">
+                <div class="loading-spinner"></div>
+            </div>
+        </div>
+        <div id="controls" class="replay-controls-container"></div>
+    </main>
+
+    <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
+    <script src="./js/replay-core.js"></script>
+    <script src="./js/replay-map.js"></script>
+    <script src="./js/replay-controls.js"></script>
+    <script>
+        // Initialize replay
+        async function init() {
+            const loadingOverlay = document.getElementById('loading-overlay');
+
+            try {
+                // Create engine with update callback
+                const engine = new ReplayEngine({
+                    onUpdate: (positions, time) => {
+                        map.updatePositions(positions);
+                    },
+                    onLoadComplete: (data) => {
+                        // Hide loading overlay
+                        loadingOverlay.style.display = 'none';
+
+                        // Update race info
+                        const raceInfo = document.getElementById('race-info');
+                        raceInfo.textContent = `${data.runners.length} runners - November 22, 2025`;
+                    }
+                });
+
+                // Create map
+                const map = new ReplayMap('map', {
+                    maxTrailLength: 100
+                });
+
+                // Load race data
+                const data = await engine.loadData('yoranch');
+
+                // Setup map with geofences and runners
+                map.loadGeofences(data.geofences);
+                map.loadRunners(data.runners);
+                map.fitToGeofences();
+
+                // Setup controls
+                const controls = new ReplayControls('controls', engine, map);
+                controls.loadRunners(data.runners);
+                controls.updateMetadata(data.metadata);
+
+            } catch (error) {
+                console.error('Failed to initialize replay:', error);
+                loadingOverlay.innerHTML = '<p style="color: #ef4444;">Failed to load race data</p>';
+            }
+        }
+
+        init();
+    </script>
+</body>
+</html>
