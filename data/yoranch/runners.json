@@ -1,26 +1,26 @@
 [
   {
     "id": 1,
-    "name": "Kevin Davenport",
+    "name": "Bradley",
     "node_id": "!f126e4c9",
-    "color": "#f781bf"
+    "color": "#e41a1c"
   },
   {
     "id": 2,
-    "name": "Dan",
+    "name": "Keb",
     "node_id": "!f15717f3",
-    "color": "#a65628"
+    "color": "#377eb8"
   },
   {
     "id": 3,
-    "name": "Carter",
+    "name": "Kevin",
     "node_id": "!95d7a717",
-    "color": "#ff7f00"
+    "color": "#4daf4a"
   },
   {
     "id": 4,
-    "name": "Derek",
+    "name": "Chang",
     "node_id": "!3d57cbe8",
-    "color": "#e41a1c"
+    "color": "#ff7f00"
   }
 ]

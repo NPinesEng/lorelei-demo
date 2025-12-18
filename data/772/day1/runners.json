@@ -1,32 +1,26 @@
 [
   {
     "id": 1,
-    "name": "Kevin Davenport",
-    "node_id": "!95d7a717",
-    "color": "#ff7f00"
-  },
-  {
-    "id": 2,
-    "name": "Dan",
-    "node_id": "!f15717f3",
-    "color": "#a65628"
-  },
-  {
-    "id": 3,
     "name": "Carter",
     "node_id": "!f126e4c9",
-    "color": "#f781bf"
-  },
-  {
-    "id": 4,
-    "name": "Derek",
-    "node_id": "!3d57cbe8",
     "color": "#e41a1c"
   },
   {
-    "id": 5,
+    "id": 2,
     "name": "Jeremy",
     "node_id": "!7f76111d",
+    "color": "#377eb8"
+  },
+  {
+    "id": 3,
+    "name": "Kevin",
+    "node_id": "!95d7a717",
     "color": "#4daf4a"
+  },
+  {
+    "id": 4,
+    "name": "Dan",
+    "node_id": "!f15717f3",
+    "color": "#ff7f00"
   }
 ]

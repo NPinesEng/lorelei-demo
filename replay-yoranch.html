@@ -28,6 +28,14 @@
         <h1>YO Ranch Trial Race</h1>
         <p class="race-info" id="race-info">Loading...</p>
 
+        <!-- Live Scorecard -->
+        <div id="scorecard-container" class="scorecard-container">
+            <div class="scorecard">
+                <h3>Live Scorecard</h3>
+                <div id="scorecard-grid" class="scorecard-grid"></div>
+            </div>
+        </div>
+
         <div id="map" class="replay-map">
             <div class="loading-overlay" id="loading-overlay">
                 <div class="loading-spinner"></div>
@@ -41,28 +49,72 @@
     <script src="./js/replay-map.js"></script>
     <script src="./js/replay-controls.js"></script>
     <script>
+        let map = null;
+
+        function formatDuration(seconds) {
+            if (seconds === null) return '--:--';
+            const h = Math.floor(seconds / 3600);
+            const m = Math.floor((seconds % 3600) / 60);
+            const s = Math.floor(seconds % 60);
+            if (h > 0) {
+                return `${h}:${m.toString().padStart(2, '0')}:${s.toString().padStart(2, '0')}`;
+            }
+            return `${m}:${s.toString().padStart(2, '0')}`;
+        }
+
+        function updateScorecard(scores) {
+            const grid = document.getElementById('scorecard-grid');
+
+            grid.innerHTML = scores.map(score => {
+                let statusClass = '';
+
+                if (score.hasFinished) {
+                    statusClass = 'finished';
+                } else if (!score.hasStarted) {
+                    statusClass = 'not-started';
+                }
+
+                return `
+                    <div class="scorecard-runner ${statusClass}">
+                        <div class="scorecard-top">
+                            <span class="scorecard-color" style="background: ${score.runner.color}"></span>
+                            <span class="scorecard-name">${score.runner.name}</span>
+                        </div>
+                        <div class="scorecard-bottom">
+                            <span class="scorecard-stages">${score.stages}/${score.totalStages}</span>
+                            <span class="scorecard-time">${formatDuration(score.elapsedTime)}</span>
+                            ${score.hasFinished ? '<span class="scorecard-status finished">Done</span>' : ''}
+                        </div>
+                    </div>
+                `;
+            }).join('');
+        }
+
         // Initialize replay
         async function init() {
             const loadingOverlay = document.getElementById('loading-overlay');
 
             try {
-                // Create engine with update callback
+                // Create engine with callbacks
                 const engine = new ReplayEngine({
                     onUpdate: (positions, time) => {
                         map.updatePositions(positions);
                     },
                     onLoadComplete: (data) => {
-                        // Hide loading overlay
                         loadingOverlay.style.display = 'none';
-
-                        // Update race info
                         const raceInfo = document.getElementById('race-info');
                         raceInfo.textContent = `${data.runners.length} runners - November 22, 2025`;
+                    },
+                    onEvent: (event) => {
+                        map.showEventLabel(event);
+                    },
+                    onScoreUpdate: (scores) => {
+                        updateScorecard(scores);
                     }
                 });
 
                 // Create map
-                const map = new ReplayMap('map', {
+                map = new ReplayMap('map', {
                     maxTrailLength: 100
                 });
 
@@ -72,12 +124,15 @@
                 // Setup map with geofences and runners
                 map.loadGeofences(data.geofences);
                 map.loadRunners(data.runners);
-                map.fitToGeofences();
+                map.fitToPositionData(data.positions);
 
                 // Setup controls
                 const controls = new ReplayControls('controls', engine, map);
                 controls.loadRunners(data.runners);
                 controls.updateMetadata(data.metadata);
+
+                // Initialize scorecard
+                updateScorecard(engine.getScores());
 
             } catch (error) {
                 console.error('Failed to initialize replay:', error);

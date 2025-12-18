@@ -31,12 +31,16 @@ class ReplayMap {
         this.markers = {};           // runnerId -> L.circleMarker
         this.trails = {};            // runnerId -> L.polyline
         this.trailPoints = {};       // runnerId -> array of [lat, lon]
+        this.eventLabels = {};       // runnerId -> L.tooltip
         this.geofenceCircles = [];
         this.runnerData = {};        // runnerId -> runner info
 
         // Follow mode: 'all', 'none', or runner ID (number)
         this.followMode = 'all';
         this.selectedRunners = new Set();
+
+        // Event label timing
+        this.eventLabelTimeouts = {};
 
         // Geofence colors matching existing implementation
         this.geofenceColors = {
@@ -136,6 +140,9 @@ class ReplayMap {
             this._updateTrail(runnerId, latLng, runner.color);
         });
 
+        // Update event label positions
+        this.updateEventLabelPositions();
+
         // Update camera based on follow mode
         this._updateCamera(visiblePositions);
     }
@@ -172,6 +179,42 @@ class ReplayMap {
 
         const group = L.featureGroup(this.geofenceCircles);
         this.map.fitBounds(group.getBounds(), { padding: [50, 50] });
+    }
+
+    /**
+     * Fit map view to position data bounds
+     * @param {Array} positions - Array of position frames from data
+     */
+    fitToPositionData(positions) {
+        if (!positions || positions.length === 0) return;
+
+        // Sample positions for faster bounds calculation
+        const sampleSize = Math.min(positions.length, 500);
+        const step = Math.max(1, Math.floor(positions.length / sampleSize));
+
+        // Collect sampled lat/lon from position data
+        const points = [];
+        for (let i = 0; i < positions.length; i += step) {
+            const frame = positions[i];
+            frame.p.forEach(pos => {
+                points.push([pos.lat, pos.lon]);
+            });
+        }
+
+        if (points.length === 0) return;
+
+        const bounds = L.latLngBounds(points);
+        this.map.fitBounds(bounds, { padding: [50, 50], maxZoom: 16 });
+    }
+
+    /**
+     * Set initial map view to a specific location
+     * @param {number} lat - Latitude
+     * @param {number} lon - Longitude
+     * @param {number} zoom - Zoom level
+     */
+    setInitialView(lat, lon, zoom = 15) {
+        this.map.setView([lat, lon], zoom);
     }
 
     /**
@@ -222,6 +265,60 @@ class ReplayMap {
      */
     getRunner(runnerId) {
         return this.runnerData[runnerId];
+    }
+
+    /**
+     * Show an event label on a runner's marker
+     * @param {Object} event - Event object with r (runner id) and label
+     */
+    showEventLabel(event) {
+        const runnerId = event.r;
+        const marker = this.markers[runnerId];
+        if (!marker) return;
+
+        // Clear any existing timeout for this runner
+        if (this.eventLabelTimeouts[runnerId]) {
+            clearTimeout(this.eventLabelTimeouts[runnerId]);
+        }
+
+        // Remove existing label
+        if (this.eventLabels[runnerId]) {
+            this.eventLabels[runnerId].remove();
+        }
+
+        // Create new label with event text
+        const label = L.tooltip({
+            permanent: true,
+            direction: 'top',
+            offset: [0, -15],
+            className: 'event-label'
+        })
+        .setContent(event.label)
+        .setLatLng(marker.getLatLng());
+
+        label.addTo(this.map);
+        this.eventLabels[runnerId] = label;
+
+        // Auto-hide after 3 seconds (scaled by playback speed if available)
+        this.eventLabelTimeouts[runnerId] = setTimeout(() => {
+            if (this.eventLabels[runnerId]) {
+                this.eventLabels[runnerId].remove();
+                delete this.eventLabels[runnerId];
+            }
+        }, 3000);
+    }
+
+    /**
+     * Update event label positions to follow markers
+     */
+    updateEventLabelPositions() {
+        Object.keys(this.eventLabels).forEach(runnerId => {
+            const marker = this.markers[runnerId];
+            const label = this.eventLabels[runnerId];
+            if (marker && label) {
+                label.setLatLng(marker.getLatLng());
+            }
+        });
     }
 
     // Private methods

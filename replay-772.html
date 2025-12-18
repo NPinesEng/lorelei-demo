@@ -35,6 +35,14 @@
 
         <p class="race-info" id="race-info">Loading...</p>
 
+        <!-- Live Scorecard -->
+        <div id="scorecard-container" class="scorecard-container">
+            <div class="scorecard">
+                <h3>Live Scorecard</h3>
+                <div id="scorecard-grid" class="scorecard-grid"></div>
+            </div>
+        </div>
+
         <div id="map" class="replay-map">
             <div class="loading-overlay" id="loading-overlay">
                 <div class="loading-spinner"></div>
@@ -52,6 +60,45 @@
         let map = null;
         let controls = null;
         let currentRaceId = '772/day1';
+
+        function formatDuration(seconds) {
+            if (seconds === null) return '--:--';
+            const h = Math.floor(seconds / 3600);
+            const m = Math.floor((seconds % 3600) / 60);
+            const s = Math.floor(seconds % 60);
+            if (h > 0) {
+                return `${h}:${m.toString().padStart(2, '0')}:${s.toString().padStart(2, '0')}`;
+            }
+            return `${m}:${s.toString().padStart(2, '0')}`;
+        }
+
+        function updateScorecard(scores) {
+            const grid = document.getElementById('scorecard-grid');
+
+            grid.innerHTML = scores.map(score => {
+                let statusClass = '';
+
+                if (score.hasFinished) {
+                    statusClass = 'finished';
+                } else if (!score.hasStarted) {
+                    statusClass = 'not-started';
+                }
+
+                return `
+                    <div class="scorecard-runner ${statusClass}">
+                        <div class="scorecard-top">
+                            <span class="scorecard-color" style="background: ${score.runner.color}"></span>
+                            <span class="scorecard-name">${score.runner.name}</span>
+                        </div>
+                        <div class="scorecard-bottom">
+                            <span class="scorecard-stages">${score.stages}/${score.totalStages}</span>
+                            <span class="scorecard-time">${formatDuration(score.elapsedTime)}</span>
+                            ${score.hasFinished ? '<span class="scorecard-status finished">Done</span>' : ''}
+                        </div>
+                    </div>
+                `;
+            }).join('');
+        }
 
         // Load a specific race day
         async function loadRace(raceId) {
@@ -77,20 +124,30 @@
                         },
                         onLoadComplete: (data) => {
                             loadingOverlay.style.display = 'none';
-
                             const raceInfo = document.getElementById('race-info');
                             const dateStr = raceId.includes('day1') ? 'December 5, 2025' : 'December 6, 2025';
                             raceInfo.textContent = `${data.runners.length} runners - ${dateStr}`;
+                        },
+                        onEvent: (event) => {
+                            map.showEventLabel(event);
+                        },
+                        onScoreUpdate: (scores) => {
+                            updateScorecard(scores);
                         }
                     });
                 } else {
-                    // Update callback for existing engine
+                    // Update callbacks for existing engine
                     engine.onLoadComplete = (data) => {
                         loadingOverlay.style.display = 'none';
-
                         const raceInfo = document.getElementById('race-info');
                         const dateStr = raceId.includes('day1') ? 'December 5, 2025' : 'December 6, 2025';
                         raceInfo.textContent = `${data.runners.length} runners - ${dateStr}`;
+                    };
+                    engine.onEvent = (event) => {
+                        map.showEventLabel(event);
+                    };
+                    engine.onScoreUpdate = (scores) => {
+                        updateScorecard(scores);
                     };
                 }
 
@@ -107,29 +164,19 @@
                 // Setup map with geofences and runners
                 map.loadGeofences(data.geofences);
                 map.loadRunners(data.runners);
-                map.fitToGeofences();
+                map.fitToPositionData(data.positions);
 
                 // Setup or update controls
                 if (!controls) {
                     controls = new ReplayControls('controls', engine, map);
                 }
 
-                // Reload runner list in controls
-                const followSelect = document.getElementById('follow-select');
-                // Remove existing runner options (keep All and Manual)
-                while (followSelect.options.length > 2) {
-                    followSelect.remove(2);
-                }
-                data.runners.forEach(runner => {
-                    const option = document.createElement('option');
-                    option.value = runner.id;
-                    option.textContent = runner.name;
-                    followSelect.appendChild(option);
-                });
-
-                // Reload runner checkboxes
+                // Reload runner list in controls (handles both dropdown and checkboxes)
                 controls.loadRunners(data.runners);
                 controls.updateMetadata(data.metadata);
+
+                // Initialize scorecard
+                updateScorecard(engine.getScores());
 
                 currentRaceId = raceId;
 

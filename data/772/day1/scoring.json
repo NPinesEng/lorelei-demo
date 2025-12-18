@@ -1,0 +1,138 @@
+[
+  {
+    "runner_id": 1,
+    "exited_start": 1764947454,
+    "enter_finish": 1764962439,
+    "total_run_time": 6713,
+    "stages_completed": 6,
+    "total_stages": 6,
+    "stage_timestamps": {
+      "1": {
+        "enter": 1764948971,
+        "exit": 1764949927
+      },
+      "2": {
+        "enter": 1764950044,
+        "exit": 1764950795
+      },
+      "3": {
+        "enter": 1764951362,
+        "exit": 1764953164
+      },
+      "4": {
+        "enter": 1764954200,
+        "exit": 1764956443
+      },
+      "5": {
+        "enter": 1764958560,
+        "exit": 1764960008
+      },
+      "6": {
+        "enter": 1764960294,
+        "exit": 1764961366
+      }
+    }
+  },
+  {
+    "runner_id": 2,
+    "exited_start": 1764948062,
+    "enter_finish": 1764962483,
+    "total_run_time": 5655,
+    "stages_completed": 6,
+    "total_stages": 6,
+    "stage_timestamps": {
+      "1": {
+        "enter": 1764949120,
+        "exit": 1764950070
+      },
+      "2": {
+        "enter": 1764950275,
+        "exit": 1764951006
+      },
+      "3": {
+        "enter": 1764951506,
+        "exit": 1764953499
+      },
+      "4": {
+        "enter": 1764954296,
+        "exit": 1764956734
+      },
+      "5": {
+        "enter": 1764958666,
+        "exit": 1764960461
+      },
+      "6": {
+        "enter": 1764960736,
+        "exit": 1764961595
+      }
+    }
+  },
+  {
+    "runner_id": 3,
+    "exited_start": 1764948150,
+    "enter_finish": 1764962738,
+    "total_run_time": 6580,
+    "stages_completed": 6,
+    "total_stages": 6,
+    "stage_timestamps": {
+      "1": {
+        "enter": 1764949223,
+        "exit": 1764950281
+      },
+      "2": {
+        "enter": 1764950578,
+        "exit": 1764951319
+      },
+      "5": {
+        "enter": 1764958880,
+        "exit": 1764960509
+      },
+      "3": {
+        "enter": 1764952954,
+        "exit": 1764953955
+      },
+      "4": {
+        "enter": 1764954701,
+        "exit": 1764957217
+      },
+      "6": {
+        "enter": 1764960823,
+        "exit": 1764961886
+      }
+    }
+  },
+  {
+    "runner_id": 4,
+    "exited_start": 1764950573,
+    "enter_finish": 1764963299,
+    "total_run_time": 3896,
+    "stages_completed": 6,
+    "total_stages": 6,
+    "stage_timestamps": {
+      "1": {
+        "enter": 1764951308,
+        "exit": 1764952182
+      },
+      "2": {
+        "enter": 1764952335,
+        "exit": 1764952739
+      },
+      "3": {
+        "enter": 1764953138,
+        "exit": 1764954310
+      },
+      "4": {
+        "enter": 1764954867,
+        "exit": 1764957550
+      },
+      "5": {
+        "enter": 1764958888,
+        "exit": 1764961188
+      },
+      "6": {
+        "enter": 1764961351,
+        "exit": 1764962748
+      }
+    }
+  }
+]

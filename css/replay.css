@@ -22,6 +22,7 @@
 
 /* Map Container */
 .replay-map {
+    position: relative;
     flex: 1;
     min-height: 500px;
     background: var(--color-bg-tertiary);
@@ -418,4 +419,136 @@
 
 .leaflet-tooltip-top:before {
     border-top-color: var(--color-bg-secondary);
+}
+
+/* Event Labels */
+.event-label {
+    background: rgba(34, 197, 94, 0.95) !important;
+    color: #000 !important;
+    border: none !important;
+    border-radius: var(--radius-sm) !important;
+    padding: 4px 8px !important;
+    font-weight: 600 !important;
+    font-size: 0.75rem !important;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.4) !important;
+    animation: eventPulse 0.3s ease-out;
+}
+
+.event-label:before {
+    display: none !important;
+}
+
+@keyframes eventPulse {
+    0% { transform: scale(0.8); opacity: 0; }
+    50% { transform: scale(1.1); }
+    100% { transform: scale(1); opacity: 1; }
+}
+
+/* Live Scorecard */
+.scorecard-container {
+    margin: 0 var(--space-md) var(--space-md);
+}
+
+.scorecard {
+    background: var(--color-bg-secondary);
+    border: 1px solid var(--color-border);
+    border-radius: var(--radius-lg);
+    padding: var(--space-md);
+}
+
+.scorecard h3 {
+    font-size: 0.875rem;
+    color: var(--color-text-muted);
+    margin-bottom: var(--space-sm);
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+}
+
+.scorecard-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(160px, 1fr));
+    gap: var(--space-sm);
+}
+
+.scorecard-runner {
+    display: flex;
+    flex-direction: column;
+    gap: var(--space-xs);
+    background: var(--color-bg-tertiary);
+    padding: var(--space-sm) var(--space-md);
+    border-radius: var(--radius-sm);
+    transition: all var(--transition-fast);
+}
+
+.scorecard-runner.finished {
+    background: rgba(34, 197, 94, 0.15);
+    border: 1px solid rgba(34, 197, 94, 0.3);
+}
+
+.scorecard-runner.not-started {
+    opacity: 0.5;
+}
+
+.scorecard-top {
+    display: flex;
+    align-items: center;
+    gap: var(--space-sm);
+}
+
+.scorecard-color {
+    width: 12px;
+    height: 12px;
+    border-radius: 50%;
+    flex-shrink: 0;
+}
+
+.scorecard-name {
+    font-weight: 500;
+    font-size: 0.875rem;
+    flex: 1;
+}
+
+.scorecard-bottom {
+    display: flex;
+    align-items: center;
+    gap: var(--space-sm);
+    padding-left: 20px; /* Align with name after color dot */
+}
+
+.scorecard-stages {
+    font-family: var(--font-mono);
+    font-size: 0.75rem;
+    color: var(--color-accent);
+    white-space: nowrap;
+}
+
+.scorecard-time {
+    font-family: var(--font-mono);
+    font-size: 0.75rem;
+    color: var(--color-text-muted);
+    white-space: nowrap;
+    flex: 1;
+}
+
+.scorecard-status {
+    font-size: 0.75rem;
+    padding: 2px 6px;
+    border-radius: var(--radius-sm);
+    white-space: nowrap;
+}
+
+.scorecard-status.finished {
+    background: var(--color-accent);
+    color: var(--color-bg);
+}
+
+/* Responsive scorecard */
+@media (max-width: 768px) {
+    .scorecard-container {
+        margin: 0 var(--space-sm) var(--space-sm);
+    }
+
+    .scorecard-grid {
+        grid-template-columns: repeat(auto-fill, minmax(150px, 1fr));
+    }
 }

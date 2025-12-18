@@ -18,8 +18,11 @@ class ReplayControls {
      * @param {Array} runners - Array of runner objects
      */
     loadRunners(runners) {
-        // Add runners to follow dropdown
+        // Clear and repopulate follow dropdown (keep first 2 options: All, Manual)
         const followSelect = document.getElementById('follow-select');
+        while (followSelect.options.length > 2) {
+            followSelect.remove(2);
+        }
         runners.forEach(runner => {
             const option = document.createElement('option');
             option.value = runner.id;
@@ -159,6 +162,7 @@ class ReplayControls {
         slider.addEventListener('input', (e) => {
             if (isDragging) {
                 const percent = parseFloat(e.target.value) / 1000;
+                this.map.clearTrails();  // Clear trails when seeking
                 this.engine.seekToPercent(percent);
             }
         });
@@ -169,6 +173,7 @@ class ReplayControls {
 
         slider.addEventListener('change', (e) => {
             const percent = parseFloat(e.target.value) / 1000;
+            this.map.clearTrails();  // Clear trails when seeking
             this.engine.seekToPercent(percent);
             isDragging = false;
         });

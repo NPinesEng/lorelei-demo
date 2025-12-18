@@ -3,64 +3,72 @@
     "id": 1,
     "type": "start",
     "sequence": 1,
-    "latitude": 34.01526810024685,
-    "longitude": -100.30059410708687,
-    "radius": 50.0
+    "latitude": 30.20744983722875,
+    "longitude": -99.67053830623627,
+    "radius": 60.0
   },
   {
-    "id": 2,
+    "id": 10,
     "type": "stage",
     "sequence": 1,
-    "latitude": 34.009314020681245,
-    "longitude": -100.29087393848103,
-    "radius": 50.0
+    "latitude": 30.200333349994086,
+    "longitude": -99.66396152973176,
+    "radius": 60.0
   },
   {
-    "id": 3,
+    "id": 11,
     "type": "stage",
-    "sequence": 3,
-    "latitude": 34.00600551334234,
-    "longitude": -100.28120693308317,
-    "radius": 50.0
+    "sequence": 2,
+    "latitude": 30.211376434317284,
+    "longitude": -99.66293156147005,
+    "radius": 40.0
   },
   {
     "id": 4,
     "type": "stage",
-    "sequence": 2,
-    "latitude": 34.008713705067215,
-    "longitude": -100.28723678923218,
-    "radius": 50.0
+    "sequence": 3,
+    "latitude": 30.223105045309293,
+    "longitude": -99.66642111446149,
+    "radius": 80.0
   },
   {
     "id": 5,
     "type": "stage",
     "sequence": 4,
-    "latitude": 33.99743126476112,
-    "longitude": -100.27386273599733,
-    "radius": 70.0
+    "latitude": 30.216639751719708,
+    "longitude": -99.6766394378445,
+    "radius": 60.0
   },
   {
     "id": 6,
     "type": "stage",
     "sequence": 5,
-    "latitude": 34.01096379118645,
-    "longitude": -100.28182917586471,
-    "radius": 50.0
+    "latitude": 30.213666442734073,
+    "longitude": -99.68234082430004,
+    "radius": 60.0
   },
   {
     "id": 7,
     "type": "stage",
     "sequence": 6,
-    "latitude": 34.01388968477503,
-    "longitude": -100.28565966113504,
-    "radius": 50.0
+    "latitude": 30.213935336772973,
+    "longitude": -99.68451221273197,
+    "radius": 60.0
   },
   {
-    "id": 8,
+    "id": 12,
+    "type": "stage",
+    "sequence": 7,
+    "latitude": 30.20912341193465,
+    "longitude": -99.68915283679964,
+    "radius": 60.0
+  },
+  {
+    "id": 9,
     "type": "finish",
     "sequence": 1,
-    "latitude": 34.01526810024685,
-    "longitude": -100.30059410708687,
-    "radius": 50.0
+    "latitude": 30.207491552040004,
+    "longitude": -99.67062350666495,
+    "radius": 60.0
   }
 ]
