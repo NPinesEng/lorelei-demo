@@ -86,4 +86,4 @@ Push to the `main` branch. Cloudflare Pages auto-deploys on push.
 
 ---
 
-Nein Pines Engineering | npines.io
+Nein Pines | npines.io
